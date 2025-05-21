@@ -47,9 +47,11 @@ def pagina_inicio():
     if st.button("Iniciar sesión como administrador"):
         time.sleep(0.1)
         st.session_state.pagina = "login"
+        st.experimental_rerun()
     if st.button("Revisar tu horario"):
         time.sleep(0.1)
         st.session_state.pagina = "ver_horario"
+        st.experimental_rerun()
 
 def pagina_login():
     st.title("Iniciar sesión")
@@ -60,12 +62,16 @@ def pagina_login():
             st.success("Acceso correcto")
             st.session_state.usuario = usuario
             st.session_state.pagina = "usuario"
+            time.sleep(0.5)
+            st.experimental_rerun()
         else:
             st.error("Usuario o clave incorrectos")
     if st.button("¿No tienes cuenta? Crear usuario"):
         st.session_state.pagina = "crear_usuario"
+        st.experimental_rerun()
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
+        st.experimental_rerun()
 
 def pagina_crear_usuario():
     st.title("Crear nueva cuenta")
@@ -87,10 +93,13 @@ def pagina_crear_usuario():
                 "correo": correo
             })
             guardar_usuarios(usuarios)
-            st.success("Usuario creado correctamente. Ahora puedes iniciar sesión.")
+            st.success("Usuario creado correctamente. Redirigiendo al inicio de sesión...")
             st.session_state.pagina = "login"
+            time.sleep(0.5)
+            st.experimental_rerun()
     if st.button("Volver"):
         st.session_state.pagina = "login"
+        st.experimental_rerun()
 
 def pagina_ver_horario():
     st.title("Consulta de Horario")
@@ -98,8 +107,10 @@ def pagina_ver_horario():
     apellido = st.text_input("Apellido")
     if st.button("Buscar"):
         st.session_state.pagina = "trabajador"
+        st.experimental_rerun()
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
+        st.experimental_rerun()
 
 def pagina_usuario():
     st.title("Panel de administración")
@@ -107,12 +118,14 @@ def pagina_usuario():
     st.write("Aquí irá el editor de horarios.")
     if st.button("Cerrar sesión"):
         st.session_state.pagina = "inicio"
+        st.experimental_rerun()
 
 def pagina_trabajador():
     st.title("Horario del trabajador")
     st.write("Aquí verás tu horario personalizado (próximamente).")
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
+        st.experimental_rerun()
 
 # Render de página según estado
 paginas = {
