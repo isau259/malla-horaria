@@ -13,9 +13,9 @@ st.set_page_config(page_title="Malla Horaria", layout="centered")
 
 def conectar_google_sheet():
     scope = [
-        "https://spreadsheets.google.com/feeds",
-        "https://www.googleapis.com/auth/drive"
-    ]
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/drive"
+]
 
     cred_dict = st.secrets["google_service_account"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(cred_dict, scope)
