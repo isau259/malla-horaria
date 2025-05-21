@@ -19,8 +19,18 @@ def conectar_google_sheet():
     cred_dict = st.secrets["google_service_account"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(cred_dict, scope)
     client = gspread.authorize(creds)
-    sheet = client.open("Usuarios Malla Horaria").sheet1  # cambia el nombre si es necesario
+    sheet = client.open("Usuarios Malla Horaria").sheet1
     return sheet
+
+def conectar_hoja_trabajadores():
+    scope = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    cred_dict = st.secrets["google_service_account"]
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(cred_dict, scope)
+    client = gspread.authorize(creds)
+    return client.open("Usuarios Malla Horaria").worksheet("Trabajadores")
 
 def hash_clave(clave):
     return hashlib.sha256(clave.encode()).hexdigest()
@@ -128,7 +138,32 @@ def ver_horarios_pasados():
 
 def administrar_trabajadores():
     st.subheader("👥 Administrar trabajadores")
-    st.info("Desde aquí podrás crear o eliminar trabajadores. (próximamente)")
+
+    hoja = conectar_hoja_trabajadores()
+    registros = hoja.get_all_records()
+
+    # Buscar trabajador por nombre
+    busqueda = st.text_input("Buscar trabajador por nombre:")
+    if busqueda:
+        registros = [r for r in registros if busqueda.lower() in r["nombre_completo"].lower()]
+
+    # Mostrar tabla
+    st.markdown("### Lista actual")
+    st.table(registros)
+
+    # Agregar nuevo trabajador
+    st.markdown("### ➕ Agregar nuevo trabajador")
+    with st.form("nuevo_trabajador"):
+        nombre = st.text_input("Nombre completo")
+        horas = st.number_input("Horas semanales", min_value=1, step=1)
+        rotativo = st.selectbox("¿Turno rotativo?", ["Sí", "No"])
+        cargo = st.text_input("Cargo")
+
+        enviar = st.form_submit_button("Agregar")
+        if enviar:
+            hoja.append_row([nombre, horas, rotativo, cargo])
+            st.success("Trabajador agregado correctamente.")
+            st.experimental_rerun()
 
 # -------------------
 # NAVEGACIÓN
