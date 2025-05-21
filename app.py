@@ -1,38 +1,45 @@
 import streamlit as st
-import json
 import hashlib
-import os
 import time
+import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
 st.set_page_config(page_title="Malla Horaria", layout="centered")
 
 # -------------------
-# FUNCIONES AUXILIARES
+# CONEXIÓN GOOGLE SHEETS
 # -------------------
 
-def cargar_usuarios():
-    if os.path.exists("usuarios.json"):
-        with open("usuarios.json", "r") as f:
-            return json.load(f)
-    return []
-
-def guardar_usuarios(usuarios):
-    with open("usuarios.json", "w") as f:
-        json.dump(usuarios, f, indent=2)
+def conectar_google_sheet():
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive"
+    ]
+    creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+    client = gspread.authorize(creds)
+    sheet = client.open("Usuarios Malla Horaria").sheet1  # cambia por el nombre exacto si es distinto
+    return sheet
 
 def hash_clave(clave):
     return hashlib.sha256(clave.encode()).hexdigest()
 
-def validar_usuario(usuario, clave):
-    usuarios = cargar_usuarios()
-    for u in usuarios:
-        if u["usuario"] == usuario and u["clave"] == hash_clave(clave):
-            return True
-    return False
+def guardar_usuario_en_sheet(usuario, clave_hash, correo):
+    sheet = conectar_google_sheet()
+    sheet.append_row([usuario, clave_hash, correo])
 
 def usuario_existe(usuario):
-    usuarios = cargar_usuarios()
-    return any(u["usuario"] == usuario for u in usuarios)
+    sheet = conectar_google_sheet()
+    usuarios = sheet.col_values(1)[1:]  # salta la cabecera
+    return usuario in usuarios
+
+def validar_usuario(usuario, clave):
+    sheet = conectar_google_sheet()
+    registros = sheet.get_all_records()
+    clave_input = hash_clave(clave)
+    for fila in registros:
+        if fila["usuario"] == usuario and fila["clave_hash"] == clave_input:
+            return True
+    return False
 
 # -------------------
 # INICIALIZACIÓN
@@ -82,13 +89,7 @@ def pagina_crear_usuario():
         elif usuario_existe(nuevo_usuario):
             st.error("El usuario ya existe")
         else:
-            usuarios = cargar_usuarios()
-            usuarios.append({
-                "usuario": nuevo_usuario,
-                "clave": hash_clave(nueva_clave),
-                "correo": correo
-            })
-            guardar_usuarios(usuarios)
+            guardar_usuario_en_sheet(nuevo_usuario, hash_clave(nueva_clave), correo)
             st.success("Usuario creado correctamente. Ahora puedes iniciar sesión.")
             st.session_state.pagina = "login"
     if st.button("Volver"):
