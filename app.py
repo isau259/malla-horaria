@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 
 st.set_page_config(page_title="Malla Horaria", layout="centered")
 
@@ -9,6 +10,7 @@ def pagina_inicio():
     st.title("Malla horaria")
     st.markdown("Bienvenido. ¿Qué deseas hacer?")
     if st.button("Iniciar sesión como administrador"):
+        time.sleep(0.1)
         st.session_state.pagina = "login"
     if st.button("Revisar tu horario"):
         st.session_state.pagina = "ver_horario"
