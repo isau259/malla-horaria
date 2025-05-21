@@ -3,6 +3,7 @@ import hashlib
 import time
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
 
 st.set_page_config(page_title="Malla Horaria", layout="centered")
 
@@ -15,7 +16,10 @@ def conectar_google_sheet():
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive"
     ]
-    creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+
+    cred_dict = st.secrets["google_service_account"]
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(cred_dict, scope)
+
     client = gspread.authorize(creds)
     sheet = client.open("Usuarios Malla Horaria").sheet1  # cambia por el nombre exacto si es distinto
     return sheet
