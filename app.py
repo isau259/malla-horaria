@@ -19,7 +19,7 @@ def conectar_google_sheet():
     cred_dict = st.secrets["google_service_account"]
     creds = ServiceAccountCredentials.from_json_keyfile_dict(cred_dict, scope)
     client = gspread.authorize(creds)
-    sheet = client.open("Usuarios Malla Horaria").sheet1  # reemplaza por el nombre real si es distinto
+    sheet = client.open("Usuarios Malla Horaria").sheet1  # cambia el nombre si es necesario
     return sheet
 
 def hash_clave(clave):
@@ -40,6 +40,9 @@ def validar_usuario(usuario, clave):
 
 if "pagina" not in st.session_state:
     st.session_state.pagina = "inicio"
+
+if "panel_opcion" not in st.session_state:
+    st.session_state.panel_opcion = None
 
 # -------------------
 # PÁGINAS
@@ -79,7 +82,25 @@ def pagina_ver_horario():
 def pagina_usuario():
     st.title("Panel de administración")
     st.markdown(f"Bienvenido, **{st.session_state.get('usuario', '')}**")
-    st.write("Aquí irá el editor de horarios.")
+
+    opcion = st.radio("Selecciona una opción:", [
+        "Crear nuevo horario",
+        "Ver horario actual",
+        "Ver horarios pasados",
+        "Administrar trabajadores"
+    ])
+
+    st.session_state.panel_opcion = opcion
+
+    if opcion == "Crear nuevo horario":
+        crear_horario()
+    elif opcion == "Ver horario actual":
+        ver_horario_actual()
+    elif opcion == "Ver horarios pasados":
+        ver_horarios_pasados()
+    elif opcion == "Administrar trabajadores":
+        administrar_trabajadores()
+
     if st.button("Cerrar sesión"):
         st.session_state.pagina = "inicio"
 
@@ -88,6 +109,26 @@ def pagina_trabajador():
     st.write("Aquí verás tu horario personalizado (próximamente).")
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
+
+# -------------------
+# FUNCIONES DEL PANEL
+# -------------------
+
+def crear_horario():
+    st.subheader("🗓 Crear nuevo horario")
+    st.info("Aquí irá el formulario para crear horarios. (próximamente)")
+
+def ver_horario_actual():
+    st.subheader("👀 Horario actual")
+    st.info("Visualización del horario actual. (próximamente)")
+
+def ver_horarios_pasados():
+    st.subheader("📅 Horarios pasados")
+    st.info("Aquí se mostrarán horarios de semanas anteriores. (próximamente)")
+
+def administrar_trabajadores():
+    st.subheader("👥 Administrar trabajadores")
+    st.info("Desde aquí podrás crear o eliminar trabajadores. (próximamente)")
 
 # -------------------
 # NAVEGACIÓN
