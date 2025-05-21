@@ -54,6 +54,9 @@ if "pagina" not in st.session_state:
 if "panel_opcion" not in st.session_state:
     st.session_state.panel_opcion = None
 
+if "actualizar_trabajadores" not in st.session_state:
+    st.session_state.actualizar_trabajadores = False
+
 # -------------------
 # PÁGINAS
 # -------------------
@@ -142,6 +145,11 @@ def administrar_trabajadores():
     hoja = conectar_hoja_trabajadores()
     registros = hoja.get_all_records()
 
+    # Refrescar tabla tras agregar o eliminar
+    if st.session_state.actualizar_trabajadores:
+        st.session_state.actualizar_trabajadores = False
+        st.stop()
+
     # Buscador tipo filtro
     busqueda = st.text_input("Buscar trabajador por nombre:")
     resultados = [r for r in registros if busqueda.lower() in r["nombre_completo"].lower()] if busqueda else registros
@@ -157,7 +165,8 @@ def administrar_trabajadores():
             index_en_hoja = registros.index(trabajador) + 2
             hoja.delete_rows(index_en_hoja)
             st.success(f"{trabajador['nombre_completo']} eliminado correctamente.")
-            st.experimental_rerun()
+            st.session_state.actualizar_trabajadores = True
+            st.stop()
 
     # Formulario para agregar nuevo trabajador
     st.markdown("### ➕ Agregar nuevo trabajador")
@@ -171,7 +180,8 @@ def administrar_trabajadores():
         if enviar:
             hoja.append_row([nombre, horas, rotativo, cargo])
             st.success("Trabajador agregado correctamente.")
-            st.experimental_rerun()
+            st.session_state.actualizar_trabajadores = True
+            st.stop()
 
 # -------------------
 # NAVEGACIÓN
