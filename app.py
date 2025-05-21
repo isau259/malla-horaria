@@ -34,31 +34,24 @@ def usuario_existe(usuario):
     usuarios = cargar_usuarios()
     return any(u["usuario"] == usuario for u in usuarios)
 
-def recargar_pagina():
-    st.markdown("""
-        <script>
-            window.location.reload();
-        </script>
-    """, unsafe_allow_html=True)
-
 # -------------------
-# CONTROL DE PÁGINAS
+# INICIALIZACIÓN
 # -------------------
 
 if "pagina" not in st.session_state:
     st.session_state.pagina = "inicio"
 
+# -------------------
+# PÁGINAS
+# -------------------
+
 def pagina_inicio():
     st.title("Malla horaria")
     st.markdown("Bienvenido. ¿Qué deseas hacer?")
     if st.button("Iniciar sesión como administrador"):
-        time.sleep(0.1)
         st.session_state.pagina = "login"
-        recargar_pagina()
     if st.button("Revisar tu horario"):
-        time.sleep(0.1)
         st.session_state.pagina = "ver_horario"
-        recargar_pagina()
 
 def pagina_login():
     st.title("Iniciar sesión")
@@ -69,16 +62,12 @@ def pagina_login():
             st.success("Acceso correcto")
             st.session_state.usuario = usuario
             st.session_state.pagina = "usuario"
-            time.sleep(0.5)
-            recargar_pagina()
         else:
             st.error("Usuario o clave incorrectos")
     if st.button("¿No tienes cuenta? Crear usuario"):
         st.session_state.pagina = "crear_usuario"
-        recargar_pagina()
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
-        recargar_pagina()
 
 def pagina_crear_usuario():
     st.title("Crear nueva cuenta")
@@ -100,13 +89,10 @@ def pagina_crear_usuario():
                 "correo": correo
             })
             guardar_usuarios(usuarios)
-            st.success("Usuario creado correctamente. Redirigiendo al inicio de sesión...")
+            st.success("Usuario creado correctamente. Ahora puedes iniciar sesión.")
             st.session_state.pagina = "login"
-            time.sleep(0.5)
-            recargar_pagina()
     if st.button("Volver"):
         st.session_state.pagina = "login"
-        recargar_pagina()
 
 def pagina_ver_horario():
     st.title("Consulta de Horario")
@@ -114,10 +100,8 @@ def pagina_ver_horario():
     apellido = st.text_input("Apellido")
     if st.button("Buscar"):
         st.session_state.pagina = "trabajador"
-        recargar_pagina()
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
-        recargar_pagina()
 
 def pagina_usuario():
     st.title("Panel de administración")
@@ -125,22 +109,26 @@ def pagina_usuario():
     st.write("Aquí irá el editor de horarios.")
     if st.button("Cerrar sesión"):
         st.session_state.pagina = "inicio"
-        recargar_pagina()
 
 def pagina_trabajador():
     st.title("Horario del trabajador")
     st.write("Aquí verás tu horario personalizado (próximamente).")
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
-        recargar_pagina()
 
-# Render de página según estado
-paginas = {
-    "inicio": pagina_inicio,
-    "login": pagina_login,
-    "crear_usuario": pagina_crear_usuario,
-    "ver_horario": pagina_ver_horario,
-    "usuario": pagina_usuario,
-    "trabajador": pagina_trabajador
-}
-paginas[st.session_state.pagina]()
+# -------------------
+# NAVEGACIÓN
+# -------------------
+
+if st.session_state.pagina == "inicio":
+    pagina_inicio()
+elif st.session_state.pagina == "login":
+    pagina_login()
+elif st.session_state.pagina == "crear_usuario":
+    pagina_crear_usuario()
+elif st.session_state.pagina == "ver_horario":
+    pagina_ver_horario()
+elif st.session_state.pagina == "usuario":
+    pagina_usuario()
+elif st.session_state.pagina == "trabajador":
+    pagina_trabajador()
