@@ -142,22 +142,30 @@ def administrar_trabajadores():
     hoja = conectar_hoja_trabajadores()
     registros = hoja.get_all_records()
 
-    # Buscar trabajador por nombre
+    # Buscador tipo filtro
     busqueda = st.text_input("Buscar trabajador por nombre:")
-    if busqueda:
-        registros = [r for r in registros if busqueda.lower() in r["nombre_completo"].lower()]
+    resultados = [r for r in registros if busqueda.lower() in r["nombre_completo"].lower()] if busqueda else registros
 
-    # Mostrar tabla
-    st.markdown("### Lista actual")
-    st.table(registros)
+    st.markdown("### Lista actual de trabajadores")
+    for i, trabajador in enumerate(resultados):
+        cols = st.columns((3, 2, 2, 2, 1))
+        cols[0].write(trabajador["nombre_completo"])
+        cols[1].write(trabajador["horas_semanales"])
+        cols[2].write(trabajador["rotativo"])
+        cols[3].write(trabajador["cargo"])
+        if cols[4].button("❌", key=f"eliminar_{i}"):
+            index_en_hoja = registros.index(trabajador) + 2
+            hoja.delete_rows(index_en_hoja)
+            st.success(f"{trabajador['nombre_completo']} eliminado correctamente.")
+            st.experimental_rerun()
 
-    # Agregar nuevo trabajador
+    # Formulario para agregar nuevo trabajador
     st.markdown("### ➕ Agregar nuevo trabajador")
-    with st.form("nuevo_trabajador"):
+    with st.form("nuevo_trabajador", clear_on_submit=True):
         nombre = st.text_input("Nombre completo")
         horas = st.number_input("Horas semanales", min_value=1, step=1)
         rotativo = st.selectbox("¿Turno rotativo?", ["Sí", "No"])
-        cargo = st.text_input("Cargo")
+        cargo = st.selectbox("Cargo", ["Caja", "Sala", "Roticería", "Panadería", "Carnicería", "Bodega"])
 
         enviar = st.form_submit_button("Agregar")
         if enviar:
