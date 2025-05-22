@@ -186,6 +186,8 @@ def pagina_trabajador():
         st.session_state.pagina = "inicio"
 
 def pagina_agregar_trabjador():
+    hoja = conectar_hoja_trabajadores()
+    registros = hoja.get_all_records()
     st.markdown("### ➕ Agregar nuevo trabajador")
     with st.form("nuevo_trabajador", clear_on_submit=True):
         nombre = st.text_input("Nombre completo")
