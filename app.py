@@ -87,6 +87,7 @@ def pagina_ver_horario():
     st.title("Consulta de Horario")
     nombre = st.text_input("Nombre")
     apellido = st.text_input("Apellido")
+
     if st.button("Buscar"):
         st.session_state.pagina = "trabajador"
     if st.button("Volver al inicio"):
@@ -102,7 +103,9 @@ def pagina_usuario():
         "Ver horarios pasados",
         "Administrar trabajadores"
     ])
-
+    if st.button("Ver horario actual"):
+        st.session_state.pagina = "ver_horario_actual"
+        
     st.session_state.panel_opcion = opcion
 
     if opcion == "Crear nuevo horario":
@@ -116,6 +119,18 @@ def pagina_usuario():
 
     if st.button("Cerrar sesión"):
         st.session_state.pagina = "inicio"
+
+def pagina_crear_nuevo_horario():
+    return None
+
+def pagina_ver_horario_actual():
+    return None
+
+def pagina_ver_horarios_pasados():
+    return None
+
+def pagina_administrar_trabajadores():
+    return None
 
 def pagina_trabajador():
     st.title("Horario del trabajador")
@@ -199,3 +214,5 @@ elif st.session_state.pagina == "usuario":
     pagina_usuario()
 elif st.session_state.pagina == "trabajador":
     pagina_trabajador()
+elif st.session_state.pagina == "ver_horario_actual":
+    pagina_ver_horario_actual()
