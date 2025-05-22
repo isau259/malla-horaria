@@ -137,7 +137,6 @@ def pagina_administrar_trabajadores():
     if st.session_state.actualizar_trabajadores:
         st.session_state.actualizar_trabajadores = False
         st.stop()
-        st.session_state.pagina = "administrar_trabajadores"
 
     # Buscador tipo filtro
     busqueda = st.text_input("Buscar trabajador por nombre:")
