@@ -105,7 +105,7 @@ def pagina_usuario():
     ])
     if st.button("Ver horario actual"):
         st.session_state.pagina = "ver_horario_actual"
-        
+
     st.session_state.panel_opcion = opcion
 
     if opcion == "Crear nuevo horario":
@@ -124,7 +124,10 @@ def pagina_crear_nuevo_horario():
     return None
 
 def pagina_ver_horario_actual():
-    return None
+    st.title("Horario actual")
+    st.write("Aquí verás el horario actual (próximamente).")
+    if st.button("Volver al inicio"):
+        st.session_state.pagina = "inicio"
 
 def pagina_ver_horarios_pasados():
     return None
