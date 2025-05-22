@@ -110,26 +110,72 @@ def pagina_usuario():
         st.session_state.pagina = "inicio"
 
 def pagina_crear_nuevo_horario():
-    st.title("Crear nuevo horario")
+    st.title("🗓 Crear nuevo horario")
     st.write("Aquí irá el formulario para crear horarios (próximamente).")
     if st.button("Volver al inicio"):
         st.session_state.pagina = "usuario"
 
 def pagina_ver_horario_actual():
-    st.title("Horario actual")
+    st.title("👀 Horario actual")
     st.write("Aquí verás el horario actual (próximamente).")
     if st.button("Volver al inicio"):
         st.session_state.pagina = "usuario"
 
 def pagina_ver_horarios_pasados():
-    st.title("Horarios anteriores")
+    st.title("📅 Horarios anteriores")
     st.write("Aquí verás los horarios anteriores (próximamente).")
     if st.button("Volver al inicio"):
         st.session_state.pagina = "usuario"
 
 def pagina_administrar_trabajadores():
-    st.title("Administrar trabajadores")
+    st.title("👥 Administrar trabajadores")
     st.write("Aquí podras visualizar, agregar y eliminar trabajadores (próximamente).")
+
+    st.subheader("👥 Administrar trabajadores")
+
+    hoja = conectar_hoja_trabajadores()
+    registros = hoja.get_all_records()
+
+    # Refrescar tabla tras agregar o eliminar
+    if st.session_state.actualizar_trabajadores:
+        st.session_state.actualizar_trabajadores = False
+        st.stop()
+
+    # Buscador tipo filtro
+    busqueda = st.text_input("Buscar trabajador por nombre:")
+    resultados = [r for r in registros if busqueda.lower() in r["nombre_completo"].lower()] if busqueda else registros
+
+    st.markdown("### Lista actual de trabajadores")
+    for i, trabajador in enumerate(resultados):
+        cols = st.columns((3, 2, 2, 2, 1))
+        cols[0].write(trabajador["nombre_completo"])
+        cols[1].write(trabajador["horas_semanales"])
+        cols[2].write(trabajador["rotativo"])
+        cols[3].write(trabajador["cargo"])
+        if cols[4].button("❌", key=f"eliminar_{i}"):
+            index_en_hoja = registros.index(trabajador) + 2
+            hoja.delete_rows(index_en_hoja)
+            st.success(f"{trabajador['nombre_completo']} eliminado correctamente.")
+            st.session_state.actualizar_trabajadores = True
+            st.stop()
+            st.session_state.pagina = "ver_horario"
+
+    # Formulario para agregar nuevo trabajador
+    st.markdown("### ➕ Agregar nuevo trabajador")
+    with st.form("nuevo_trabajador", clear_on_submit=True):
+        nombre = st.text_input("Nombre completo")
+        horas = st.number_input("Horas semanales", min_value=1, step=1)
+        rotativo = st.selectbox("¿Turno rotativo?", ["Sí", "No"])
+        cargo = st.selectbox("Cargo", ["Caja", "Sala", "Roticería", "Panadería", "Carnicería", "Bodega"])
+
+        enviar = st.form_submit_button("Agregar")
+        if enviar:
+            hoja.append_row([nombre, horas, rotativo, cargo])
+            st.success("Trabajador agregado correctamente.")
+            st.session_state.actualizar_trabajadores = True
+            st.session_state.pagina = "ver_horario"
+            st.stop()
+
     if st.button("Volver al inicio"):
         st.session_state.pagina = "usuario"
 
@@ -143,17 +189,7 @@ def pagina_trabajador():
 # FUNCIONES DEL PANEL
 # -------------------
 
-def crear_horario():
-    st.subheader("🗓 Crear nuevo horario")
-    st.info("Aquí irá el formulario para crear horarios. (próximamente)")
 
-def ver_horario_actual():
-    st.subheader("👀 Horario actual")
-    st.info("Visualización del horario actual. (próximamente)")
-
-def ver_horarios_pasados():
-    st.subheader("📅 Horarios pasados")
-    st.info("Aquí se mostrarán horarios de semanas anteriores. (próximamente)")
 
 def administrar_trabajadores():
     st.subheader("👥 Administrar trabajadores")
