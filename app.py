@@ -103,8 +103,14 @@ def pagina_usuario():
         "Ver horarios pasados",
         "Administrar trabajadores"
     ])
-    if st.button("Ver horario actual"):
+    if st.button("Crear horario"):
+        st.session_state.pagina = "crear_nuevo_horario"
+    elif st.button("Ver horario actual"):
         st.session_state.pagina = "ver_horario_actual"
+    elif st.button("Ver horarios pasados"):
+        st.session_state.pagina = "ver_horarios_pasados"
+    elif st.button("Administrar trabajadores"):
+        st.session_state.pagina = "administrar_trabajadores"
 
     st.session_state.panel_opcion = opcion
 
@@ -121,7 +127,10 @@ def pagina_usuario():
         st.session_state.pagina = "inicio"
 
 def pagina_crear_nuevo_horario():
-    return None
+    st.title("Crear nuevo horario")
+    st.write("Aquí irá el formulario para crear horarios (próximamente).")
+    if st.button("Volver al inicio"):
+        st.session_state.pagina = "usuario"
 
 def pagina_ver_horario_actual():
     st.title("Horario actual")
@@ -130,10 +139,16 @@ def pagina_ver_horario_actual():
         st.session_state.pagina = "usuario"
 
 def pagina_ver_horarios_pasados():
-    return None
+    st.title("Horarios anteriores")
+    st.write("Aquí verás los horarios anteriores (próximamente).")
+    if st.button("Volver al inicio"):
+        st.session_state.pagina = "usuario"
 
 def pagina_administrar_trabajadores():
-    return None
+    st.title("Administrar trabajadores")
+    st.write("Aquí podras visualizar, agregar y eliminar trabajadores (próximamente).")
+    if st.button("Volver al inicio"):
+        st.session_state.pagina = "usuario"
 
 def pagina_trabajador():
     st.title("Horario del trabajador")
@@ -219,3 +234,9 @@ elif st.session_state.pagina == "trabajador":
     pagina_trabajador()
 elif st.session_state.pagina == "ver_horario_actual":
     pagina_ver_horario_actual()
+elif st.session_state.pagina == "crear_nuevo_horario":
+    pagina_crear_nuevo_horario()
+elif st.session_state.pagina == "ver_horarios_pasados":
+    pagina_ver_horarios_pasados()
+elif st.session_state.pagina == "administrar_trabajadores":
+    pagina_administrar_trabajadores()
