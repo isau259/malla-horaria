@@ -156,7 +156,7 @@ def pagina_administrar_trabajadores():
             st.success(f"{trabajador['nombre_completo']} eliminado correctamente.")
             st.session_state.actualizar_trabajadores = True
             st.stop()
-            st.session_state.pagina = "ver_horario"
+            st.session_state.pagina = "administrar_trabajadores"
 
     # Formulario para agregar nuevo trabajador
     st.markdown("### ➕ Agregar nuevo trabajador")
