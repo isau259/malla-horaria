@@ -99,14 +99,13 @@ def pagina_usuario():
 
     if st.button("Crear horario"):
         st.session_state.pagina = "crear_nuevo_horario"
-    elif st.button("Ver horario actual"):
+    if st.button("Ver horario actual"):
         st.session_state.pagina = "ver_horario_actual"
-    elif st.button("Ver horarios pasados"):
+    if st.button("Ver horarios pasados"):
         st.session_state.pagina = "ver_horarios_pasados"
-    elif st.button("Administrar trabajadores"):
+    if st.button("Administrar trabajadores"):
         st.session_state.pagina = "administrar_trabajadores"
-
-    elif st.button("Cerrar sesión"):
+    if st.button("Cerrar sesión"):
         st.session_state.pagina = "inicio"
 
 def pagina_crear_nuevo_horario():
@@ -131,8 +130,6 @@ def pagina_administrar_trabajadores():
     st.title("👥 Administrar trabajadores")
     st.write("Aquí podras visualizar, agregar y eliminar trabajadores (próximamente).")
 
-    st.subheader("👥 Administrar trabajadores")
-
     hoja = conectar_hoja_trabajadores()
     registros = hoja.get_all_records()
 
@@ -140,6 +137,7 @@ def pagina_administrar_trabajadores():
     if st.session_state.actualizar_trabajadores:
         st.session_state.actualizar_trabajadores = False
         st.stop()
+        st.session_state.pagina = "administrar_trabajadores"
 
     # Buscador tipo filtro
     busqueda = st.text_input("Buscar trabajador por nombre:")
