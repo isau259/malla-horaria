@@ -127,7 +127,7 @@ def pagina_ver_horario_actual():
     st.title("Horario actual")
     st.write("Aquí verás el horario actual (próximamente).")
     if st.button("Volver al inicio"):
-        st.session_state.pagina = "inicio"
+        st.session_state.pagina = "usuario"
 
 def pagina_ver_horarios_pasados():
     return None
