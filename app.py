@@ -182,6 +182,7 @@ def administrar_trabajadores():
             hoja.append_row([nombre, horas, rotativo, cargo])
             st.success("Trabajador agregado correctamente.")
             st.session_state.actualizar_trabajadores = True
+            st.session_state.pagina = "ver_horario"
             st.stop()
 
 # -------------------
