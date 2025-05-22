@@ -97,12 +97,6 @@ def pagina_usuario():
     st.title("Panel de administración")
     st.markdown(f"Bienvenido, **{st.session_state.get('usuario', '')}**")
 
-    opcion = st.radio("Selecciona una opción:", [
-        "Crear nuevo horario",
-        "Ver horario actual",
-        "Ver horarios pasados",
-        "Administrar trabajadores"
-    ])
     if st.button("Crear horario"):
         st.session_state.pagina = "crear_nuevo_horario"
     elif st.button("Ver horario actual"):
