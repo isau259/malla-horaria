@@ -112,18 +112,7 @@ def pagina_usuario():
     elif st.button("Administrar trabajadores"):
         st.session_state.pagina = "administrar_trabajadores"
 
-    st.session_state.panel_opcion = opcion
-
-    if opcion == "Crear nuevo horario":
-        crear_horario()
-    elif opcion == "Ver horario actual":
-        ver_horario_actual()
-    elif opcion == "Ver horarios pasados":
-        ver_horarios_pasados()
-    elif opcion == "Administrar trabajadores":
-        administrar_trabajadores()
-
-    if st.button("Cerrar sesión"):
+    elif st.button("Cerrar sesión"):
         st.session_state.pagina = "inicio"
 
 def pagina_crear_nuevo_horario():
