@@ -133,6 +133,9 @@ def pagina_administrar_trabajadores():
     hoja = conectar_hoja_trabajadores()
     registros = hoja.get_all_records()
 
+    if st.button("Agregar nuevo trabajador"):
+        st.session_state.pagina = "agregar_trabjador"
+
     # Refrescar tabla tras agregar o eliminar
     if st.session_state.actualizar_trabajadores:
         st.session_state.actualizar_trabajadores = False
@@ -182,10 +185,27 @@ def pagina_trabajador():
     if st.button("Volver al inicio"):
         st.session_state.pagina = "inicio"
 
+def pagina_agregar_trabjador():
+    st.markdown("### ➕ Agregar nuevo trabajador")
+    with st.form("nuevo_trabajador", clear_on_submit=True):
+        nombre = st.text_input("Nombre completo")
+        horas = st.number_input("Horas semanales", min_value=1, step=1)
+        rotativo = st.selectbox("¿Turno rotativo?", ["Sí", "No"])
+        cargo = st.selectbox("Cargo", ["Caja", "Sala", "Roticería", "Panadería", "Carnicería", "Bodega"])
+
+        enviar = st.form_submit_button("Agregar")
+        if enviar:
+            hoja.append_row([nombre, horas, rotativo, cargo])
+            st.success("Trabajador agregado correctamente.")
+            st.session_state.actualizar_trabajadores = True
+            st.session_state.pagina = "ver_horario"
+            st.stop()
+
+    if st.button("Volver al inicio"):
+        st.session_state.pagina = "usuario"
 # -------------------
 # FUNCIONES DEL PANEL
 # -------------------
-
 
 
 def administrar_trabajadores():
@@ -256,3 +276,5 @@ elif st.session_state.pagina == "ver_horarios_pasados":
     pagina_ver_horarios_pasados()
 elif st.session_state.pagina == "administrar_trabajadores":
     pagina_administrar_trabajadores()
+elif st.session_state.pagina == "agregar_trabjador":
+    pagina_agregar_trabjador()
